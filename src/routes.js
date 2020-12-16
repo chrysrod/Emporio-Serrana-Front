@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { isAuthenticated } from './services/auth';
+import SignIn from './pages/SignIn';
 
 const PrivateRoute = ({ component: Component, path }) => (
   <Route
@@ -19,7 +20,7 @@ const PrivateRoute = ({ component: Component, path }) => (
 const Routes = () => (
   <BrowserRouter>
     <Switch>
-      <Route exact path="/" component={() => <h1>Login</h1>} />
+      <Route exact path="/" component={SignIn} />
       <PrivateRoute path="/dashboard" component={() => <h1>Dash</h1>} />
     </Switch>
   </BrowserRouter>

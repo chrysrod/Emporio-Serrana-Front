@@ -20,5 +20,21 @@ module.exports = {
     'react/state-in-constructor': 'off',
     // 'no-console': ['error', { allow: ['tron'] }],
     'no-param-reassign': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
+    'jsx-a11y/label-has-for': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
   },
 };
