@@ -47,6 +47,7 @@ export default createGlobalStyle`
   .form-check-input {
     background-color: transparent;
     border-color: #fff;
+    cursor: pointer;
   }
 
   .form-check-input:checked {
@@ -64,6 +65,7 @@ export default createGlobalStyle`
 
   .form-check-label {
     font-size: 0.8rem;
+    cursor: pointer;
   }
 
   .search {

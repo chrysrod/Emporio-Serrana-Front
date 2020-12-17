@@ -27,11 +27,15 @@ const Routes = () => (
 );
 
 PrivateRoute.propTypes = {
-  component: PropTypes.element.isRequired,
+  component: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
-  }).isRequired,
+  }),
+};
+
+PrivateRoute.defaultProps = {
+  location: undefined,
 };
 
 export default Routes;
