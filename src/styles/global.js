@@ -44,6 +44,10 @@ export default createGlobalStyle`
     text-transform: uppercase;
   }
 
+  .card-header.bg-transparent {
+    background: transparent;
+  }
+
   .form-check-input {
     background-color: transparent;
     border-color: #fff;
