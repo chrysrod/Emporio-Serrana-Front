@@ -1,6 +1,8 @@
 import React from 'react';
 import Sidebar from '../../components/sidebar';
 import { EarningsList } from './styles';
+import Doughnut from '../../components/doughnutchart';
+import Line from '../../components/linechart';
 
 export default function index() {
   return (
@@ -13,15 +15,11 @@ export default function index() {
 
       {/* Main content */}
       <div className="col-lg-11">
-        <div className="p-4">
+        <div className="p-4 pb-0">
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <p className="d-inline-block fs-3 mb-0">Hello, John Doe</p>
               <i className="fas fa-user fs-2 ms-3" />
-            </div>
-
-            <div>
-              <input type="text" className="w-auto form-control search" />
             </div>
           </div>
 
@@ -95,11 +93,13 @@ export default function index() {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-lg-6">
-                      <p>Porcentagem 1</p>
+                      <Doughnut label="test" percent={98} />
+                      <p className="text-center fw-bold mt-1 fs-6">2019</p>
                     </div>
 
                     <div className="col-lg-6">
-                      <p>Porcentagem 2</p>
+                      <Doughnut label="test2" percent={73} />
+                      <p className="text-center fw-bold mt-1 fs-6">2020</p>
                     </div>
                   </div>
                 </div>
@@ -120,7 +120,7 @@ export default function index() {
                   </div>
                 </li>
 
-                <li className="list-group-item active" aria-current="true">
+                <li className="list-group-item">
                   <div className="d-flex justify-content-between align-items-center">
                     <i className="far fa-calendar-alt fs-2" />
 
@@ -140,7 +140,7 @@ export default function index() {
                   </div>
                 </li>
 
-                <li className="list-group-item">
+                <li className="list-group-item active" aria-current="true">
                   <div className="d-flex justify-content-between align-items-center">
                     <i className="far fa-calendar-alt fs-2" />
 
@@ -153,9 +153,9 @@ export default function index() {
             </div>
 
             <div className="col-lg-6">
-              <div className="card">
+              <div className="card gradient">
                 <div className="card-body">
-                  <p>Área gráfico</p>
+                  <Line />
                 </div>
               </div>
             </div>

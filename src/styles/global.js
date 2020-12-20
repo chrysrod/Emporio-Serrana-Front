@@ -35,7 +35,10 @@ export default createGlobalStyle`
     background-color: #f13c73;
     border-color: #f3306b;
   }
-
+  .card.gradient {
+    background: linear-gradient(to right, #f60085, #7a51c9);
+    border: none;
+  }
   .card-header {
     background: linear-gradient(to right, #f60085, #7a51c9);
     padding: 1.2rem;
@@ -46,6 +49,8 @@ export default createGlobalStyle`
 
   .card-header.bg-transparent {
     background: transparent;
+    padding: 0;
+    margin-bottom: 10px;
   }
 
   .form-check-input {
