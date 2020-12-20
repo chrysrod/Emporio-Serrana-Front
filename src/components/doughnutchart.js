@@ -63,9 +63,8 @@ export default class Graphic extends Component {
         data={this.data}
         options={{
           circumference: (2 * Math.PI * percent) / 100,
-          legend: {
-            display: false,
-          },
+          legend: false,
+          tooltips: false,
         }}
       />
     );

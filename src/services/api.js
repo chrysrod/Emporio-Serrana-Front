@@ -9,7 +9,7 @@ api.interceptors.request.use(async (config) => {
   const token = getToken();
 
   if (token) {
-    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+    config.headers.Authorization = `${JSON.parse(token)}`;
   }
   return config;
 });

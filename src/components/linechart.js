@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 export default class Graphic extends Component {
   constructor(props) {
@@ -11,11 +11,26 @@ export default class Graphic extends Component {
       gradient.addColorStop(0, '#fff');
       gradient.addColorStop(1, 'rgba(255,255,255,0.2)');
 
+      const { data: content } = this.props;
+
+      const dataLabels = content.map((e) =>
+        new Date(e.timestamp * 1000).getDate()
+      );
+      // eslint-disable-next-line no-console
+      console.log(dataLabels);
+      const dataSalesAmount = content.map(
+        (e) =>
+          // new Intl.NumberFormat('pt', {
+          //   style: 'currency',
+          //   currency: 'BRL',
+          // }).format(e.sales_amount)
+          e.sales_amount
+      );
       return {
-        labels: ['test1', 'test2', 'sdf', 'asdgf', 'asdfa'],
+        labels: dataLabels,
         datasets: [
           {
-            data: [13, 34, 15, 67, 78],
+            data: [...dataSalesAmount],
             fill: true,
             backgroundColor: gradient,
             borderColor: '#fff',
@@ -33,6 +48,16 @@ export default class Graphic extends Component {
       <Line
         data={this.data}
         options={{
+          tooltips: {
+            callbacks: {
+              label(tooltipItem) {
+                return `${new Intl.NumberFormat('pt', {
+                  style: 'currency',
+                  currency: 'BRL',
+                }).format(tooltipItem.yLabel)}`;
+              },
+            },
+          },
           legend: {
             display: false,
           },
@@ -67,6 +92,11 @@ export default class Graphic extends Component {
   }
 }
 
-// Graphic.propTypes = {
-//   label: PropTypes.string.isRequired,
-// };
+Graphic.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      sales_amount: PropTypes.number,
+      timestamp: PropTypes.number,
+    })
+  ).isRequired,
+};
