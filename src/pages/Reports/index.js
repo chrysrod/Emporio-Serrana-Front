@@ -6,7 +6,7 @@ export default class Reports extends Component {
   constructor() {
     super();
     this.state = {
-      date: new Date(),
+      date: new Date(1608517520 * 1000),
       reports: [],
     };
   }
@@ -14,9 +14,9 @@ export default class Reports extends Component {
   componentDidMount() {
     const { date } = this.state;
     api
-      .get('/sales', {
+      .get('/sales/get_sales_per_date', {
         params: {
-          get_sales_per_date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+          date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
         },
       })
       .then((res) => {
@@ -29,18 +29,20 @@ export default class Reports extends Component {
   render() {
     // eslint-disable-next-line no-unused-vars
     const { date, reports } = this.state;
-    const handleSearchReport = async () => {
+    const handleSearchReport = async (input) => {
+      const newDate = new Date(input);
       await api
-        .get('/sales', {
+        .get('/sales/get_sales_per_date', {
           params: {
-            get_sales_per_date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+            date: `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`,
           },
         })
         .then((res) => {
           // eslint-disable-next-line no-console
           console.log(res);
           this.setState({ reports: res.data });
-        });
+        })
+        .finally(() => this.setState({ date: input }));
     };
     return (
       <>
@@ -60,8 +62,7 @@ export default class Reports extends Component {
                     className="form-control"
                     value={date}
                     onChange={(e) => {
-                      this.setState({ date: e.target.value });
-                      handleSearchReport();
+                      handleSearchReport(e.target.value);
                     }}
                   />
                 </div>

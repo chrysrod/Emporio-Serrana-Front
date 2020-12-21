@@ -20,7 +20,8 @@ export default class Settings extends Component {
           username: 'chrysrodev',
           password,
         })
-        .then(() => toast.success('Senha alterada!'));
+        .then(() => toast.success('Senha alterada!'))
+        .finally(() => this.setState({ password: '', confirmation: '' }));
     // eslint-disable-next-line no-console
     else toast.error('Senhas diferentes!');
   };

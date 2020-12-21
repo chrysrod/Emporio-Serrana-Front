@@ -13,7 +13,7 @@ export default class SignIn extends Component {
     this.state = {
       checked: true,
       username: 'chrysrodev',
-      password: '123',
+      password: 'password',
     };
   }
 
