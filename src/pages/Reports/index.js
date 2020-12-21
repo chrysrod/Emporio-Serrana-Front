@@ -8,6 +8,7 @@ export default class Reports extends Component {
     this.state = {
       date: new Date(1608517520 * 1000),
       reports: [],
+      report: {},
     };
   }
 
@@ -28,13 +29,14 @@ export default class Reports extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { date, reports } = this.state;
+    const { date, reports, report } = this.state;
     const handleSearchReport = async (input) => {
-      const newDate = new Date(input);
+      // eslint-disable-next-line no-console
+      console.log(input);
       await api
         .get('/sales/get_sales_per_date', {
           params: {
-            date: `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`,
+            date: input,
           },
         })
         .then((res) => {
@@ -72,90 +74,42 @@ export default class Reports extends Component {
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Total</th>
                     <th>Opções</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-capitalize p-0"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDetalhesVenda"
-                      >
-                        Detalhes
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-capitalize p-0"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDetalhesVenda"
-                      >
-                        Detalhes
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colSpan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-capitalize p-0"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDetalhesVenda"
-                      >
-                        Detalhes
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td colSpan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-capitalize p-0"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDetalhesVenda"
-                      >
-                        Detalhes
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td colSpan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                    <td>
-                      <button
-                        className="btn btn-link text-capitalize p-0"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDetalhesVenda"
-                      >
-                        Detalhes
-                      </button>
-                    </td>
-                  </tr>
+                  {reports.map((e, idx) => (
+                    <tr key={e.timestamp}>
+                      <th scope="row">{idx + 1}</th>
+                      <td>
+                        {new Intl.DateTimeFormat('pt').format(
+                          new Date(e.timestamp * 1000)
+                        )}
+                      </td>
+                      <td>
+                        {new Intl.NumberFormat('pt', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        }).format(e.sales_amount)}
+                      </td>
+
+                      <td>
+                        <button
+                          className="btn btn-link text-capitalize p-0"
+                          type="button"
+                          onClick={() => {
+                            this.setState({ report: reports[idx] });
+                          }}
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalDetalhesVenda"
+                        >
+                          Detalhes
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -182,80 +136,94 @@ export default class Reports extends Component {
                   aria-label="Close"
                 />
               </div>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-lg-8">
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label htmlFor="dataVenda">Data da venda</label>
-                          <input
-                            type="text"
-                            id="dataVenda"
-                            className="form-control"
-                            readOnly
-                          />
+              {report ? (
+                <div className="modal-body">
+                  <div className="row">
+                    <div className="col-lg-8">
+                      <div className="row">
+                        <div className="col-lg-6">
+                          <div className="mb-3">
+                            <label htmlFor="dataVenda">Data da venda</label>
+                            <input
+                              type="text"
+                              id="dataVenda"
+                              className="form-control"
+                              value={`${new Date(
+                                report.timestamp * 1000
+                              ).getDate()}-${new Date(
+                                report.timestamp * 1000
+                              ).getMonth()}-${new Date(
+                                report.timestamp * 1000
+                              ).getFullYear()}`}
+                              readOnly
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label htmlFor="horaVenda">Hora da venda</label>
-                          <input
-                            type="text"
-                            id="horaVenda"
-                            className="form-control"
-                            readOnly
-                          />
+                        <div className="col-lg-6">
+                          <div className="mb-3">
+                            <label htmlFor="horaVenda">Hora da venda</label>
+                            <input
+                              type="text"
+                              id="horaVenda"
+                              className="form-control"
+                              value={`${new Date(
+                                report.timestamp * 1000
+                              ).getHours()}:${new Date(
+                                report.timestamp * 1000
+                              ).getMinutes()}`}
+                              readOnly
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <table className="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">4</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">5</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p className="mb-0 text-end">
-                  <strong>Total:</strong> R$ 1999,50
-                </p>
-              </div>
+                  <table className="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Preço</th>
+                        <th scope="col">Quantidade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td colSpan="2">Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td colSpan="2">Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">5</th>
+                        <td colSpan="2">Larry the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p className="mb-0 text-end">
+                    <strong>Total:</strong>{' '}
+                    {new Intl.NumberFormat('pt', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    }).format(report.sales_amount)}
+                  </p>
+                </div>
+              ) : (
+                <div />
+              )}
             </div>
           </div>
         </div>

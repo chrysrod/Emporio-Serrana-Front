@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Sidebar from '../../components/sidebar';
 import api from '../../services/api';
 
@@ -20,14 +21,14 @@ export default class Sell extends Component {
     };
   }
 
-  componentDidMount() {
-    api.get('/sales/get_last_five_sales').then((res) => {
-      const lastFive = res.data[0];
-      this.setState({ lastFiveSales: [...lastFive.sale] });
-      // eslint-disable-next-line no-console
-      // console.log(lastFive.sale);
-    });
-  }
+  // componentDidMount() {
+  //   api.get('/sales/get_last_five_sales').then((res) => {
+  //     const lastFive = res.data[0];
+  //     this.setState({ lastFiveSales: [...lastFive.sale] });
+  //     // eslint-disable-next-line no-console
+  //     // console.log(lastFive.sale);
+  //   });
+  // }
 
   render() {
     const {
@@ -65,9 +66,25 @@ export default class Sell extends Component {
         quantity: '',
       });
     };
+    const handleInsertSale = async () => {
+      let totalPrice = 0;
+
+      cart.forEach((e) => {
+        totalPrice += e.price * e.quantity;
+      });
+
+      await api
+        .post('/sales/insert_sale', {
+          timestamp: +new Date(),
+          total_price: totalPrice,
+          sale: cart,
+        })
+        .then(() => toast.success('Venda finalizada com sucesso!'));
+    };
     return (
       <>
         <div id="sell" className="row mx-0 h-100">
+          <ToastContainer />
           <Sidebar />
 
           <div className="col-lg-1" />
@@ -240,7 +257,11 @@ export default class Sell extends Component {
 
                     <div className="col-12">
                       <div className="mb-3 text-end">
-                        <button type="button" className="btn btn-pink">
+                        <button
+                          type="button"
+                          onClick={handleInsertSale}
+                          className="btn btn-pink"
+                        >
                           Finalizar venda
                         </button>
                       </div>
