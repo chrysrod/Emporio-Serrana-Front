@@ -12,12 +12,12 @@ export default class Graphic extends Component {
       gradient.addColorStop(1, '#7a51c9');
 
       return {
-        labels: [props.label],
+        labels: [props.label, ''],
         datasets: [
           {
-            data: [props.percent],
-            backgroundColor: gradient,
-            borderColor: gradient,
+            data: [props.percent, 100 - props.percent],
+            backgroundColor: [gradient, '#f3f1f2'],
+            borderColor: [gradient, '#f3f1f2'],
             borderWidth: 1,
           },
         ],
@@ -38,9 +38,6 @@ export default class Graphic extends Component {
         const { height } = chart.chart;
         const { ctx } = chart.chart;
 
-        // eslint-disable-next-line no-console
-        // console.log(width, height);
-
         const fontSize = (height / 114).toFixed(2);
         ctx.font = `${fontSize}rem sans-serif`;
         ctx.textBaseline = 'middle';
@@ -55,14 +52,14 @@ export default class Graphic extends Component {
   }
 
   render() {
-    const { percent } = this.props;
+    // const { percent } = this.props;
     return (
       <Doughnut
         width={100}
         height={100}
         data={this.data}
         options={{
-          circumference: (2 * Math.PI * percent) / 100,
+          // circumference: (2 * Math.PI * percent) / 100,
           legend: false,
           tooltips: false,
         }}

@@ -13,19 +13,34 @@ export default function sidebar() {
       >
         <i className="fas fa-home" />
       </SidebarItem>
-      <SidebarItem to="/test">
-        <i className="far fa-file-alt" />
+      <SidebarItem
+        to="/vender"
+        className={location.pathname === '/vender' ? 'active' : ''}
+      >
+        <i className="fas fa-shopping-cart" />
       </SidebarItem>
-      <SidebarItem to="/test">
-        <i className="far fa-envelope" />
+      <SidebarItem
+        to="/notifications"
+        className={location.pathname === '/notifications' ? 'active' : ''}
+      >
+        <i className="far fa-bell" />
       </SidebarItem>
-      <SidebarItem to="/test">
+      <SidebarItem
+        to="/reports"
+        className={location.pathname === '/reports' ? 'active' : ''}
+      >
         <i className="fas fa-signal" />
       </SidebarItem>
-      <SidebarItem to="/test">
-        <i className="fas fa-minus" />
+      <SidebarItem
+        to="/products"
+        className={location.pathname === '/products' ? 'active' : ''}
+      >
+        <i className="fas fa-list" />
       </SidebarItem>
-      <SidebarItem to="/test">
+      <SidebarItem
+        to="/settings"
+        className={location.pathname === '/settings' ? 'active' : ''}
+      >
         <i className="fas fa-cog" />
       </SidebarItem>
     </Sidebar>

@@ -16,16 +16,8 @@ export default class Graphic extends Component {
       const dataLabels = content.map((e) =>
         new Date(e.timestamp * 1000).getDate()
       );
-      // eslint-disable-next-line no-console
-      console.log(dataLabels);
-      const dataSalesAmount = content.map(
-        (e) =>
-          // new Intl.NumberFormat('pt', {
-          //   style: 'currency',
-          //   currency: 'BRL',
-          // }).format(e.sales_amount)
-          e.sales_amount
-      );
+
+      const dataSalesAmount = content.map((e) => e.sales_amount);
       return {
         labels: dataLabels,
         datasets: [

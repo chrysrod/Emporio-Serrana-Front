@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import Sidebar from '../../components/sidebar';
 import { EarningsList } from './styles';
@@ -9,20 +10,29 @@ export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      data: [],
+      // sales: [],
+      earnings: {},
+      percentages: [],
     };
+    this.sales = [];
   }
 
   componentDidMount() {
+    api.get('/sales/get_percentages').then((res) => {
+      this.setState({ percentages: res.data });
+    });
     api.get('/sales/get_all_week_sales').then((res) => {
-      this.setState({ data: res.data });
+      this.sales = res.data;
+    });
+    api.get('/sales/get_earnings').then((res) => {
+      this.setState({ earnings: res.data });
     });
   }
 
   render() {
-    const { data } = this.state;
-
-    const lastThreeItens = data.splice(data.lenght - 3, 3);
+    // eslint-disable-next-line no-unused-vars
+    const { percentages, earnings } = this.state;
+    const lastThreeItens = this.sales.splice(this.sales.length - 3, 3);
 
     return (
       <div id="dashboard" className="row mx-0 h-100">
@@ -46,19 +56,24 @@ export default class Dashboard extends Component {
               <div className="col-lg-3 mt-lg-0 mt-3">
                 <div className="card shadow-sm rounded-0">
                   <div className="card-header">
-                    <h2 className="fs-5 mb-0">Earning</h2>
+                    <h2 className="fs-5 mb-0">Earning yesterday</h2>
                   </div>
                   <div className="card-body">
-                    <p className="fs-1 fw-bold text-center mb-0">$ 5729</p>
+                    <p className="fs-1 fw-bold text-center mb-0">
+                      {new Intl.NumberFormat('pt', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(earnings.yesterday)}
+                    </p>
 
-                    <div className="d-flex justify-content-around align-items-center">
+                    {/* <div className="d-flex justify-content-around align-items-center">
                       <p className="mb-0">
                         +$ 78 <i className="fas fa-arrow-up text-primary" />
                       </p>
                       <button type="button" className="border-0 bg-transparent">
                         <i className="far fa-chart-bar fs-3 text-gradient" />
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -66,19 +81,15 @@ export default class Dashboard extends Component {
               <div className="col-lg-3 mt-lg-0 mt-3">
                 <div className="card shadow-sm rounded-0">
                   <div className="card-header">
-                    <h2 className="fs-5 mb-0">Pageviews</h2>
+                    <h2 className="fs-5 mb-0">Earning 3 days</h2>
                   </div>
                   <div className="card-body">
-                    <p className="fs-1 fw-bold text-center mb-0">293878</p>
-
-                    <div className="d-flex justify-content-around align-items-center">
-                      <p className="mb-0">
-                        -2930 <i className="fas fa-arrow-down text-danger" />
-                      </p>
-                      <button type="button" className="border-0 bg-transparent">
-                        <i className="far fa-chart-bar fs-3 text-gradient" />
-                      </button>
-                    </div>
+                    <p className="fs-1 fw-bold text-center mb-0">
+                      {new Intl.NumberFormat('pt', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(earnings.last_three_days)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -86,19 +97,15 @@ export default class Dashboard extends Component {
               <div className="col-lg-3 mt-lg-0 mt-3">
                 <div className="card shadow-sm rounded-0">
                   <div className="card-header">
-                    <h2 className="fs-5 mb-0">Downloads</h2>
+                    <h2 className="fs-5 mb-0">Earning 7 days</h2>
                   </div>
                   <div className="card-body">
-                    <p className="fs-1 fw-bold text-center mb-0">582920</p>
-
-                    <div className="d-flex justify-content-around align-items-center">
-                      <p className="mb-0">
-                        -1029 <i className="fas fa-arrow-down text-danger" />
-                      </p>
-                      <button type="button" className="border-0 bg-transparent">
-                        <i className="far fa-chart-bar fs-3 text-gradient" />
-                      </button>
-                    </div>
+                    <p className="fs-1 fw-bold text-center mb-0">
+                      {new Intl.NumberFormat('pt', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(earnings.week)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -110,62 +117,79 @@ export default class Dashboard extends Component {
                       Percentages
                     </h2>
                   </div>
+                  {percentages.length > 0 ? (
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-lg-6">
+                          <Doughnut
+                            label={`${percentages[0].year}`}
+                            percent={percentages[0].percentage}
+                          />
+                          <p className="text-center fw-bold mt-1 fs-6">
+                            {percentages[0].year}
+                          </p>
+                        </div>
 
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <Doughnut label="test" percent={98} />
-                        <p className="text-center fw-bold mt-1 fs-6">2019</p>
-                      </div>
-
-                      <div className="col-lg-6">
-                        <Doughnut label="test2" percent={73} />
-                        <p className="text-center fw-bold mt-1 fs-6">2020</p>
+                        <div className="col-lg-6">
+                          <Doughnut
+                            label={`${percentages[1].year}`}
+                            percent={percentages[1].percentage}
+                          />
+                          <p className="text-center fw-bold mt-1 fs-6">
+                            {percentages[1].year}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div />
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="row mt-5">
               <div className="col-lg-6">
-                <EarningsList>
-                  {lastThreeItens.map((e, idx) => (
-                    <li
-                      key={e.sales_amount}
-                      className={
-                        lastThreeItens.length - 1 === idx
-                          ? 'list-group-item active'
-                          : 'list-group-item'
-                      }
-                    >
-                      <div className="d-flex justify-content-between align-items-center">
-                        <i className="far fa-calendar-alt fs-2" />
+                {this.sales.length > 0 && percentages.length > 0 ? (
+                  <EarningsList>
+                    {lastThreeItens.map((e, idx) => (
+                      <li
+                        key={e.sales_amount}
+                        className={
+                          lastThreeItens.length - 1 === idx
+                            ? 'list-group-item active'
+                            : 'list-group-item'
+                        }
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <i className="far fa-calendar-alt fs-2" />
 
-                        <p className="mb-0">
-                          {new Date(e.timestamp * 1000).getDate()}{' '}
-                          {new Intl.DateTimeFormat('pt', {
-                            month: 'long',
-                          }).format(new Date(e.timestamp * 1000))}
-                        </p>
+                          <p className="mb-0">
+                            {new Date(e.timestamp * 1000).getDate()}{' '}
+                            {new Intl.DateTimeFormat('pt', {
+                              month: 'long',
+                            }).format(new Date(e.timestamp * 1000))}
+                          </p>
 
-                        <p className="mb-0">
-                          {new Intl.NumberFormat('pt', {
-                            style: 'currency',
-                            currency: 'BRL',
-                          }).format(e.sales_amount)}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </EarningsList>
+                          <p className="mb-0">
+                            {new Intl.NumberFormat('pt', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }).format(e.sales_amount)}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </EarningsList>
+                ) : (
+                  <div />
+                )}
               </div>
 
               <div className="col-lg-6">
                 <div className="card gradient">
                   <div className="card-body">
-                    <Line data={[...lastThreeItens, ...data]} />
+                    <Line data={[...lastThreeItens, ...this.sales]} />
                   </div>
                 </div>
               </div>
