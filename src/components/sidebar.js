@@ -14,8 +14,8 @@ export default function sidebar() {
         <i className="fas fa-home" />
       </SidebarItem>
       <SidebarItem
-        to="/vender"
-        className={location.pathname === '/vender' ? 'active' : ''}
+        to="/sell"
+        className={location.pathname === '/sell' ? 'active' : ''}
       >
         <i className="fas fa-shopping-cart" />
       </SidebarItem>

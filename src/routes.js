@@ -8,6 +8,7 @@ import Notifications from './pages/Notifications';
 import Reports from './pages/Reports';
 import Products from './pages/Products';
 import Settings from './pages/Settings';
+import Sell from './pages/Sell';
 
 const PrivateRoute = ({ component: Component, path }) => (
   <Route
@@ -31,6 +32,7 @@ const Routes = () => (
       <PrivateRoute path="/reports" component={Reports} />
       <PrivateRoute path="/products" component={Products} />
       <PrivateRoute path="/settings" component={Settings} />
+      <PrivateRoute path="/sell" component={Sell} />
     </Switch>
   </BrowserRouter>
 );
