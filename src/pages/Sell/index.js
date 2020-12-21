@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import Sidebar from '../../components/sidebar';
 import api from '../../services/api';
@@ -8,24 +10,59 @@ export default class Sell extends Component {
     this.state = {
       lastFiveSales: [],
       productId: '',
+      id: '',
+      name: '',
+      measure: '',
+      price: '',
+      quantity: '',
+      total: 0,
+      cart: [],
     };
   }
 
   componentDidMount() {
     api.get('/sales/get_last_five_sales').then((res) => {
-      this.setState({ lastFiveSales: res.data });
+      const lastFive = res.data[0];
+      this.setState({ lastFiveSales: [...lastFive.sale] });
       // eslint-disable-next-line no-console
-      console.log(res.data);
+      // console.log(lastFive.sale);
     });
   }
 
   render() {
-    const { lastFiveSales, productId } = this.state;
-    const handleGetProduct = async (id) => {
-      api.get('/products', {
-        params: {
-          get_product: id,
-        },
+    const {
+      lastFiveSales,
+      productId,
+      name,
+      measure,
+      price,
+      quantity,
+      cart,
+    } = this.state;
+    const handleGetProduct = async () => {
+      await api
+        .get('/products/get_product', {
+          params: {
+            id: productId,
+          },
+        })
+        .then((res) => {
+          this.setState({
+            name: res.data.name,
+            measure: res.data.measure,
+            price: res.data.price,
+            quantity: 1,
+          });
+        });
+    };
+    const handleAddCart = () => {
+      this.setState({
+        cart: [...cart, { name, id: productId, measure, price, quantity }],
+        name: '',
+        productId: '',
+        measure: '',
+        price: '',
+        quantity: '',
       });
     };
     return (
@@ -92,6 +129,7 @@ export default class Sell extends Component {
                         <input
                           type="text"
                           id="nome"
+                          value={name}
                           className="form-control"
                           readOnly
                         />
@@ -104,6 +142,7 @@ export default class Sell extends Component {
                         <input
                           type="text"
                           id="unidadeMedida"
+                          value={measure}
                           className="form-control"
                           readOnly
                         />
@@ -115,6 +154,10 @@ export default class Sell extends Component {
                         <label htmlFor="quantidade">Quantidade</label>
                         <input
                           type="text"
+                          value={quantity}
+                          onChange={(e) =>
+                            this.setState({ quantity: e.target.value })
+                          }
                           id="quantidade"
                           className="form-control"
                         />
@@ -127,6 +170,10 @@ export default class Sell extends Component {
                         <input
                           type="text"
                           id="valor"
+                          value={price}
+                          onChange={(e) =>
+                            this.setState({ price: e.target.value })
+                          }
                           className="form-control"
                         />
                       </div>
@@ -135,72 +182,73 @@ export default class Sell extends Component {
                     <div className="col-12">
                       <div className="mb-3">
                         <p className="mb-0 text-end">
-                          <strong>Total:</strong> R$ 1999,50
+                          <strong>Total:</strong>{' '}
+                          {new Intl.NumberFormat('pt', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(price * quantity)}
                         </p>
                       </div>
                     </div>
 
                     <div className="col-12">
                       <div className="mb-3 text-end">
-                        <button type="button" className="btn btn-pink">
+                        <button
+                          type="button"
+                          onClick={() => handleAddCart()}
+                          className="btn btn-pink"
+                        >
                           Adicionar item
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
+                {cart.length > 0 ? (
+                  <>
+                    <div className="col-12">
+                      <div className="mb-3">
+                        <table className="table table-striped table-hover mt-4">
+                          <thead>
+                            <tr>
+                              <th scope="col">ID</th>
+                              <th scope="col">Nome</th>
+                              <th scope="col">Medida</th>
+                              <th scope="col">Preço</th>
+                              <th scope="col">Quantidade</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {cart.map((e) => (
+                              <tr key={e.id}>
+                                <th scope="row">{e.id}</th>
+                                <td>{e.name}</td>
+                                <td>{e.measure}</td>
+                                <td>
+                                  {new Intl.NumberFormat('pt', {
+                                    style: 'currency',
+                                    currency: 'BRL',
+                                  }).format(e.price)}
+                                </td>
+                                <td>{e.quantity}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
 
-                <div className="col-12">
-                  <div className="mb-3">
-                    <table className="table table-striped table-hover mt-4">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td colSpan="2">Larry the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">4</th>
-                          <td colSpan="2">Larry the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">5</th>
-                          <td colSpan="2">Larry the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="col-12">
-                  <div className="mb-3 text-end">
-                    <button type="button" className="btn btn-pink">
-                      Finalizar venda
-                    </button>
-                  </div>
-                </div>
+                    <div className="col-12">
+                      <div className="mb-3 text-end">
+                        <button type="button" className="btn btn-pink">
+                          Finalizar venda
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div />
+                )}
               </div>
             </div>
           </div>
@@ -236,56 +284,24 @@ export default class Sell extends Component {
                       <th scope="col">Handle</th>
                     </tr>
                   </thead>
-                  {lastFiveSales ? (
-                    <tbody>
-                      {lastFiveSales.map((e) => (
-                        <tr key={e.product.id}>
-                          <th scope="row">{e.product.id}</th>
-                          <td>{new Date(e.product.expiration_date * 1000)}</td>
-                          <td>
-                            {
-                              new Date(e.product.expiration_date * 1000)
-                                .getHours
-                            }
-                            :
-                            {new Date(
-                              e.product.expiration_date * 1000
-                            ).getMinutes()}
-                          </td>
-                          <td>
-                            {new Intl.NumberFormat('pt', {
-                              style: 'currency',
-                              currency: 'BRL',
-                            }).format(e.product.price * e.quantity)}
-                          </td>
-                        </tr>
-                      ))}
-
-                      {/* <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">4</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">5</th>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr> */}
-                    </tbody>
-                  ) : (
-                    <div />
-                  )}
+                  <tbody>
+                    {/* {lastFiveSales.map((e) => (
+                      <tr key={e.product.id}>
+                        <th scope="row">{e.product.id}</th>
+                        <td>{new Date(e.timestamp * 1000)}</td>
+                        <td>
+                          {new Date(e.timestamp * 1000).getHours}:
+                          {new Date(e.timestamp * 1000).getMinutes()}
+                        </td>
+                        <td>
+                          {new Intl.NumberFormat('pt', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(e.product.price * e.quantity)}
+                        </td>
+                      </tr>
+                    ))} */}
+                  </tbody>
                 </table>
               </div>
             </div>
