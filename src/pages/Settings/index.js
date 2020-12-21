@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Sidebar from '../../components/sidebar';
 import api from '../../services/api';
 
@@ -14,16 +15,21 @@ export default class Settings extends Component {
   handlePostNewPassword = async () => {
     const { password, confirmation } = this.state;
     if (password === confirmation)
-      api.post('/users/update_user', {
-        username: 'chrysrodev',
-        password,
-      });
+      api
+        .put('/users/update_user', {
+          username: 'chrysrodev',
+          password,
+        })
+        .then(() => toast.success('Senha alterada!'));
+    // eslint-disable-next-line no-console
+    else toast.error('Senhas diferentes!');
   };
 
   render() {
     const { password, confirmation } = this.state;
     return (
       <div id="dashboard" className="row mx-0 h-100">
+        <ToastContainer />
         <Sidebar />
 
         <div className="col-lg-1" />
@@ -70,7 +76,7 @@ export default class Settings extends Component {
                   <div className="col-8">
                     <div className="mb-3 text-end">
                       <button
-                        onClick={() => {}}
+                        onClick={this.handlePostNewPassword}
                         type="button"
                         className="btn btn-pink"
                       >
